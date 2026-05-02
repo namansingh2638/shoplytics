@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Shop Settings{% endblock %}
+{% block content %}
+  <div class="card" style="max-width:400px;">
+    <h2>Shop Settings</h2>
+    <p style="color:#888; margin-bottom:16px;">Organization: {{ org.name }}</p>
+    <form method="POST">
+      <label style="font-size:14px;">Opening Hour (0-23)</label>
+      <input type="number" name="open_hour" min="0" max="23" value="{{ org.open_hour }}" required>
+
+      <label style="font-size:14px;">Closing Hour (0-23)</label>
+      <input type="number" name="close_hour" min="0" max="23" value="{{ org.close_hour }}" required>
+
+      <small>Use 24hr format. E.g. 9 = 9 AM, 21 = 9 PM</small>
+      <br><br>
+      <button class="btn btn-primary" type="submit">Save Settings</button>
+    </form>
+  </div>
+{% endblock %}

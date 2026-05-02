@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Categories{% endblock %}
+{% block content %}
+  <h2>Categories</h2>
+  <div style="margin-bottom:16px;">
+    <a class="btn btn-primary" href="{{ url_for('inventory.add_category') }}">+ Add Category</a>
+    <a class="btn" href="{{ url_for('inventory.index') }}">Back to Inventory</a>
+  </div>
+  <div class="card">
+    {% if categories %}
+    <table>
+      <tr><th>Name</th></tr>
+      {% for cat in categories %}
+        <tr><td>{{ cat.name }}</td></tr>
+      {% endfor %}
+    </table>
+    {% else %}
+      <p>No categories yet.</p>
+    {% endif %}
+  </div>
+{% endblock %}

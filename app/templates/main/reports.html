@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Reports{% endblock %}
+{% block content %}
+  <h2>Reports</h2>
+
+  <h3>🗓️ This Month — Profit & Loss</h3>
+  <div class="card">
+    <table>
+      <tr><th>Item</th><th>Amount</th></tr>
+      <tr><td>Total Sales Revenue</td><td>₹{{ monthly_sales }}</td></tr>
+      <tr><td>Cost of Goods Sold</td><td style="color:red;">- ₹{{ monthly_cogs }}</td></tr>
+      <tr><td>Total Expenses</td><td style="color:red;">- ₹{{ monthly_expenses_total }}</td></tr>
+      <tr>
+        <td><strong>Net Profit</strong></td>
+        <td style="color:{{ 'green' if monthly_profit >= 0 else 'red' }};">
+          <strong>₹{{ monthly_profit }}</strong>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <h3>💸 Expenses by Category</h3>
+  <div class="card">
+    {% if expense_by_category %}
+    <table>
+      <tr><th>Category</th><th>Total</th></tr>
+      {% for cat, total in expense_by_category %}
+      <tr><td>{{ cat or 'Uncategorized' }}</td><td>₹{{ total }}</td></tr>
+      {% endfor %}
+      <tr><td><strong>Total</strong></td><td><strong>₹{{ monthly_expenses_total }}</strong></td></tr>
+    </table>
+    {% else %}
+      <p>No expenses this month.</p>
+    {% endif %}
+  </div>
+
+  <h3>📋 Last 7 Days</h3>
+  <div class="card">
+    {% if recent_transactions %}
+    <table>
+      <tr><th>Invoice #</th><th>Date</th><th>Total</th></tr>
+      {% for t in recent_transactions %}
+      <tr>
+        <td>{{ t.id }}</td>
+        <td>{{ t.date.strftime('%d %b %Y, %I:%M %p') }}</td>
+        <td>₹{{ t.total_amount }}</td>
+      </tr>
+      {% endfor %}
+      <tr>
+        <td colspan="2"><strong>Total</strong></td>
+        <td><strong>₹{{ recent_transactions | sum(attribute='total_amount') }}</strong></td>
+      </tr>
+    </table>
+    {% else %}
+      <p>No transactions in the last 7 days.</p>
+    {% endif %}
+  </div>
+
+  <h3>📋 This Month</h3>
+  <div class="card">
+    {% if monthly_transactions %}
+    <table>
+      <tr><th>Invoice #</th><th>Date</th><th>Total</th></tr>
+      {% for t in monthly_transactions %}
+      <tr>
+        <td>{{ t.id }}</td>
+        <td>{{ t.date.strftime('%d %b %Y, %I:%M %p') }}</td>
+        <td>₹{{ t.total_amount }}</td>
+      </tr>
+      {% endfor %}
+      <tr>
+        <td colspan="2"><strong>Total</strong></td>
+        <td><strong>₹{{ monthly_sales }}</strong></td>
+      </tr>
+    </table>
+    {% else %}
+      <p>No transactions this month.</p>
+    {% endif %}
+  </div>
+
+{% endblock %}

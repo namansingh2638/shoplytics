@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+{% block title %}Analytics{% endblock %}
+{% block content %}
+
+<h2>📊 Analytics Dashboard</h2>
+
+<!-- Summary Cards -->
+<div class="summary-grid">
+  <div class="summary-card">
+    <div class="label">Today's Sales</div>
+    <div class="value">₹{{ today_sales }}</div>
+  </div>
+  <div class="summary-card">
+    <div class="label">Monthly Sales</div>
+    <div class="value">₹{{ monthly_sales }}</div>
+  </div>
+  <div class="summary-card">
+    <div class="label">Transactions This Month</div>
+    <div class="value">{{ transaction_count }}</div>
+  </div>
+  <div class="summary-card">
+    <div class="label">Avg Daily Sales</div>
+    <div class="value">₹{{ avg_daily_sales }}</div>
+  </div>
+</div>
+
+<!-- Sales Trend -->
+<div class="card">
+  <h3>📈 Sales Trend (Last 30 Days)</h3>
+  <canvas id="salesChart" height="80"></canvas>
+</div>
+
+<!-- Hourly Sales -->
+<div class="card">
+  <h3>🕒 Hourly Sales Distribution</h3>
+  <canvas id="hourlyChart" height="80"></canvas>
+  <br>
+  <p><strong>Dead Hours:</strong>
+    {% if dead_hours %}
+      <span style="color:red;">{{ dead_hours | join(', ') }}</span>
+    {% else %}
+      <span style="color:green;">No dead hours detected</span>
+    {% endif %}
+  </p>
+  <p><strong>Lowest Performing Hour:</strong>
+    <span style="color:red;">{{ lowest_hour }}</span>
+  </p>
+</div>
+
+<!-- Category Distribution -->
+<div class="card">
+  <h3>🥧 Revenue by Category</h3>
+  <div style="max-width:400px; margin:auto;">
+    <canvas id="categoryChart"></canvas>
+  </div>
+</div>
+
+<!-- Top Products -->
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+  <div class="card">
+    <h3>🏆 Top Products by Quantity Sold</h3>
+    <table>
+      <tr><th>Product</th><th>Units Sold</th></tr>
+      {% for p in top_by_qty %}
+      <tr><td>{{ p.name }}</td><td>{{ p.qty_sold }}</td></tr>
+      {% endfor %}
+    </table>
+  </div>
+  <div class="card">
+    <h3>💰 Top Products by Revenue</h3>
+    <table>
+      <tr><th>Product</th><th>Revenue</th></tr>
+      {% for p in top_by_revenue %}
+      <tr><td>{{ p.name }}</td><td>₹{{ p.revenue }}</td></tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+
+<!-- Profit per Product -->
+<div class="card">
+  <h3>💰 Profit per Product</h3>
+  <table>
+    <tr><th>Product</th><th>Qty Sold</th><th>Revenue</th><th>Profit</th></tr>
+    {% for p in product_profits %}
+    <tr>
+      <td>{{ p.name }}</td>
+      <td>{{ p.qty_sold }}</td>
+      <td>₹{{ p.revenue }}</td>
+      <td style="color:{{ 'green' if p.profit >= 0 else 'red' }};">₹{{ p.profit }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+
+<!-- Profit per Category -->
+<div class="card">
+  <h3>📂 Profit per Category</h3>
+  <table>
+    <tr><th>Category</th><th>Revenue</th><th>Profit</th></tr>
+    {% for c in category_profits %}
+    <tr>
+      <td>{{ c.category }}</td>
+      <td>₹{{ c.revenue }}</td>
+      <td style="color:{{ 'green' if c.profit >= 0 else 'red' }};">₹{{ c.profit }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+
+<!-- Inventory Intelligence -->
+<div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px;">
+  <div class="card">
+    <h3>⚠️ Low Stock</h3>
+    {% if low_stock %}
+    <table>
+      <tr><th>Product</th><th>Stock</th></tr>
+      {% for p in low_stock %}
+      <tr><td>{{ p.name }}</td><td style="color:orange;">{{ p.stock_quantity }}</td></tr>
+      {% endfor %}
+    </table>
+    {% else %}<p style="color:green;">All good!</p>{% endif %}
+  </div>
+  <div class="card">
+    <h3>🚫 Out of Stock</h3>
+    {% if out_of_stock %}
+    <table>
+      <tr><th>Product</th></tr>
+      {% for p in out_of_stock %}
+      <tr><td style="color:red;">{{ p.name }}</td></tr>
+      {% endfor %}
+    </table>
+    {% else %}<p style="color:green;">All good!</p>{% endif %}
+  </div>
+  <div class="card">
+    <h3>💤 Dead Stock (30 days)</h3>
+    {% if dead_stock %}
+    <table>
+      <tr><th>Product</th><th>Stock</th></tr>
+      {% for p in dead_stock %}
+      <tr><td>{{ p.name }}</td><td>{{ p.stock_quantity }}</td></tr>
+      {% endfor %}
+    </table>
+    {% else %}<p style="color:green;">No dead stock!</p>{% endif %}
+  </div>
+</div>
+
+<!-- Supplier Analytics -->
+<div class="card">
+  <h3>📦 Supplier Analytics</h3>
+  {% if supplier_analytics %}
+  <table>
+    <tr><th>Supplier</th><th>Total Orders</th><th>Total Spent</th></tr>
+    {% for s in supplier_analytics %}
+    <tr>
+      <td>{{ s.name }}</td>
+      <td>{{ s.total_orders }}</td>
+      <td>₹{{ s.total_spent | round(2) }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}<p>No purchase data yet.</p>{% endif %}
+</div>
+
+<!-- Prediction -->
+<div class="card">
+  <h3>🔮 Demand Prediction (Based on Last 30 Days)</h3>
+  <table>
+    <tr><th>Period</th><th>Predicted Sales</th></tr>
+    <tr><td>Average Daily</td><td>₹{{ avg_daily_sales }}</td></tr>
+    <tr><td>Next 7 Days</td><td>₹{{ predicted_weekly }}</td></tr>
+    <tr><td>Next 30 Days</td><td>₹{{ predicted_monthly }}</td></tr>
+  </table>
+  <small>* Based on simple moving average of last 30 days of actual sales data.</small>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script>
+  // Sales Trend
+  new Chart(document.getElementById('salesChart'), {
+    type: 'line',
+    data: {
+      labels: {{ daily_labels | tojson }},
+      datasets: [{
+        label: 'Daily Sales (₹)',
+        data: {{ daily_values | tojson }},
+        borderColor: '#2c3e50',
+        backgroundColor: 'rgba(44,62,80,0.1)',
+        fill: true,
+        tension: 0.3
+      }]
+    },
+    options: { plugins: { legend: { display: false } } }
+  });
+
+  // Hourly Sales
+  new Chart(document.getElementById('hourlyChart'), {
+    type: 'bar',
+    data: {
+      labels: {{ hourly_labels | tojson }},
+      datasets: [{
+        label: 'Sales (₹)',
+        data: {{ hourly_values | tojson }},
+        backgroundColor: {{ hourly_values | tojson }}.map(v =>
+          v === Math.min(...{{ hourly_values | tojson }}) ? '#e74c3c' : '#2c3e50'
+        )
+      }]
+    },
+    options: { plugins: { legend: { display: false } } }
+  });
+
+  // Category Pie
+  new Chart(document.getElementById('categoryChart'), {
+    type: 'pie',
+    data: {
+      labels: {{ cat_labels | tojson }},
+      datasets: [{
+        data: {{ cat_values | tojson }},
+        backgroundColor: [
+          '#2c3e50','#e74c3c','#27ae60','#f39c12','#8e44ad','#16a085'
+        ]
+      }]
+    }
+  });
+</script>
+
+{% endblock %}

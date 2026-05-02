@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Search Products{% endblock %}
+{% block content %}
+  <h2>Search Products</h2>
+  <form method="GET" style="display:flex; gap:8px; margin-bottom:20px;">
+    <input type="text" name="q" value="{{ query }}" placeholder="Search by name or barcode" style="margin:0;">
+    <button class="btn btn-primary" type="submit">Search</button>
+  </form>
+
+  <a class="btn" href="{{ url_for('billing.index') }}">← Back to Cart</a>
+  <br><br>
+
+  {% if products %}
+  <table>
+    <tr><th>Name</th><th>Barcode</th><th>Price</th><th>Stock</th><th>Action</th></tr>
+    {% for p in products %}
+    <tr>
+      <td>{{ p.name }}</td>
+      <td>{{ p.barcode or '-' }}</td>
+      <td>₹{{ p.selling_price }}</td>
+      <td>{{ p.stock_quantity }}</td>
+      <td>
+        {% if p.stock_quantity > 0 %}
+          <a class="btn btn-success" href="{{ url_for('billing.add_to_cart', product_id=p.id) }}">Add to Cart</a>
+        {% else %}
+          <span style="color:red;">Out of Stock</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% elif query %}
+    <div class="card"><p>No products found for "{{ query }}".</p></div>
+  {% endif %}
+{% endblock %}

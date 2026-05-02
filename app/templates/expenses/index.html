@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Expenses{% endblock %}
+{% block content %}
+  <h2>Expenses</h2>
+  <div style="margin-bottom:16px;">
+    <a class="btn btn-primary" href="{{ url_for('expenses.add_expense') }}">+ Add Expense</a>
+  </div>
+
+  {% if expenses %}
+  <table>
+    <tr><th>Date</th><th>Category</th><th>Note</th><th>Amount</th><th>Action</th></tr>
+    {% for e in expenses %}
+    <tr>
+      <td>{{ e.date.strftime('%d %b %Y') }}</td>
+      <td>{{ e.category or '-' }}</td>
+      <td>{{ e.note or '-' }}</td>
+      <td>₹{{ e.amount }}</td>
+      <td>
+        <a style="color:red;" href="{{ url_for('expenses.delete_expense', expense_id=e.id) }}"
+           onclick="return confirm('Delete?')">Delete</a>
+      </td>
+    </tr>
+    {% endfor %}
+    <tr>
+      <td colspan="3"><strong>Total</strong></td>
+      <td><strong>₹{{ total }}</strong></td>
+      <td></td>
+    </tr>
+  </table>
+  {% else %}
+    <div class="card"><p>No expenses recorded yet.</p></div>
+  {% endif %}
+{% endblock %}

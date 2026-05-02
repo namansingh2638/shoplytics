@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Add Category{% endblock %}
+{% block content %}
+  <div class="card" style="max-width:400px;">
+    <h2>Add Category</h2><br>
+    <form method="POST">
+      <input type="text" name="name" placeholder="Category Name" required>
+      <button class="btn btn-primary" type="submit">Add</button>
+      <a class="btn" href="{{ url_for('inventory.categories') }}">Cancel</a>
+    </form>
+  </div>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Edit Product{% endblock %}
+{% block content %}
+  <div class="card" style="max-width:500px;">
+    <h2>Edit Product</h2><br>
+    <form method="POST">
+      <input type="text" name="name" value="{{ product.name }}" required>
+      <input type="text" name="barcode" value="{{ product.barcode or '' }}">
+      <input type="number" step="0.01" name="cost_price" value="{{ product.cost_price }}" required>
+      <input type="number" step="0.01" name="selling_price" value="{{ product.selling_price }}" required>
+      <input type="number" name="stock_quantity" value="{{ product.stock_quantity }}" required>
+      <select name="category_id">
+        <option value="">-- No Category --</option>
+        {% for cat in categories %}
+          <option value="{{ cat.id }}" {% if product.category_id == cat.id %}selected{% endif %}>
+            {{ cat.name }}
+          </option>
+        {% endfor %}
+      </select>
+      <button class="btn btn-primary" type="submit">Update</button>
+      <a class="btn" href="{{ url_for('inventory.index') }}">Cancel</a>
+    </form>
+  </div>
+{% endblock %}

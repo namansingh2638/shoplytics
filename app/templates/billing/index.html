@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Billing{% endblock %}
+{% block content %}
+  <h2>Billing</h2>
+  <div style="margin-bottom:16px;">
+    <a class="btn btn-primary" href="{{ url_for('billing.search') }}">+ Search & Add Product</a>
+  </div>
+
+  {% if cart_items %}
+  <table>
+    <tr>
+      <th>Product</th><th>Price</th><th>Quantity</th><th>Subtotal</th><th>Action</th>
+    </tr>
+    {% for item in cart_items %}
+    <tr>
+      <td>{{ item.product.name }}</td>
+      <td>₹{{ item.product.selling_price }}</td>
+      <td>
+        <form method="POST" action="{{ url_for('billing.update_cart', product_id=item.product.id) }}" style="display:flex; gap:8px;">
+          <input type="number" name="quantity" value="{{ item.quantity }}" min="0" style="width:70px; margin:0;">
+          <button class="btn btn-primary" type="submit">Update</button>
+        </form>
+      </td>
+      <td>₹{{ item.subtotal }}</td>
+      <td>
+        <a style="color:red;" href="{{ url_for('billing.remove_from_cart', product_id=item.product.id) }}">Remove</a>
+      </td>
+    </tr>
+    {% endfor %}
+    <tr>
+      <td colspan="3"><strong>Total</strong></td>
+      <td><strong>₹{{ total }}</strong></td>
+      <td></td>
+    </tr>
+  </table>
+  <br>
+  <form method="POST" action="{{ url_for('billing.checkout') }}">
+    <button class="btn btn-success" type="submit">✅ Confirm & Generate Invoice</button>
+  </form>
+  {% else %}
+    <div class="card"><p>Cart is empty. Search for products to add.</p></div>
+  {% endif %}
+{% endblock %}

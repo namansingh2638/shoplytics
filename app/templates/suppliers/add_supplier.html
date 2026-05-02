@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Add Supplier{% endblock %}
+{% block content %}
+  <div class="card" style="max-width:400px;">
+    <h2>Add Supplier</h2><br>
+    <form method="POST">
+      <input type="text" name="name" placeholder="Supplier Name" required>
+      <input type="text" name="contact" placeholder="Contact Info (optional)">
+      <button class="btn btn-primary" type="submit">Add Supplier</button>
+      <a class="btn" href="{{ url_for('suppliers.index') }}">Cancel</a>
+    </form>
+  </div>
+{% endblock %}

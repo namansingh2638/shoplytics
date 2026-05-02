@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Inventory{% endblock %}
+{% block content %}
+  <h2>Inventory</h2>
+  <div style="margin-bottom:16px;">
+    <a class="btn btn-primary" href="{{ url_for('inventory.add_product') }}">+ Add Product</a>
+    <a class="btn btn-primary" href="{{ url_for('inventory.categories') }}">Manage Categories</a>
+  </div>
+
+  <table>
+    <tr>
+      <th>Name</th><th>Barcode</th><th>Category</th>
+      <th>Cost</th><th>Selling</th><th>Stock</th><th>Actions</th>
+    </tr>
+    {% for p in products %}
+    <tr>
+      <td>{{ p.name }}</td>
+      <td>{{ p.barcode or '-' }}</td>
+      <td>{{ p.category.name if p.category else '-' }}</td>
+      <td>₹{{ p.cost_price }}</td>
+      <td>₹{{ p.selling_price }}</td>
+      <td>{{ p.stock_quantity }}</td>
+      <td class="actions">
+        <a href="{{ url_for('inventory.edit_product', product_id=p.id) }}">Edit</a>
+        <a style="color:red;" href="{{ url_for('inventory.delete_product', product_id=p.id) }}"
+           onclick="return confirm('Delete this product?')">Delete</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+{% endblock %}

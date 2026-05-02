@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+
+  <h2>Dashboard</h2>
+
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="label">Today's Sales</div>
+      <div class="value">₹{{ daily_sales }}</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">Today's Profit</div>
+      <div class="value {{ 'green' if daily_profit >= 0 else 'red' }}">₹{{ daily_profit }}</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">Monthly Sales</div>
+      <div class="value">₹{{ monthly_sales }}</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">Monthly Profit</div>
+      <div class="value {{ 'green' if monthly_profit >= 0 else 'red' }}">₹{{ monthly_profit }}</div>
+    </div>
+  </div>
+
+  <h3>⚠️ Low Stock Alerts</h3>
+  <div class="card">
+    {% if low_stock %}
+    <table>
+      <tr><th>Product</th><th>Stock Left</th></tr>
+      {% for p in low_stock %}
+      <tr>
+        <td>{{ p.name }}</td>
+        <td style="color:red;">{{ p.stock_quantity }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% else %}
+      <p style="color:green;">✅ All products have sufficient stock.</p>
+    {% endif %}
+  </div>
+
+  <h3>🏆 Top Selling Products</h3>
+  <div class="card">
+    {% if top_products %}
+    <table>
+      <tr><th>Product</th><th>Units Sold</th></tr>
+      {% for name, total_sold in top_products %}
+      <tr><td>{{ name }}</td><td>{{ total_sold }}</td></tr>
+      {% endfor %}
+    </table>
+    {% else %}
+      <p>No sales data yet.</p>
+    {% endif %}
+  </div>
+
+{% endblock %}

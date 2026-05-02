@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Invite Staff{% endblock %}
+{% block content %}
+  <div class="card" style="max-width:500px;">
+    <h2>Invite Staff Member</h2><br>
+    <form method="POST" style="display:flex; gap:8px;">
+      <input type="email" name="email" placeholder="Staff Email" required style="margin:0;">
+      <button class="btn btn-primary" type="submit">Generate Link</button>
+    </form>
+  </div>
+
+  <h3>Pending Invites</h3>
+  {% if pending %}
+  <table>
+    <tr><th>Email</th><th>Sent At</th></tr>
+    {% for inv in pending %}
+    <tr>
+      <td>{{ inv.email }}</td>
+      <td>{{ inv.created_at.strftime('%d %b %Y') }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+    <div class="card"><p>No pending invites.</p></div>
+  {% endif %}
+{% endblock %}

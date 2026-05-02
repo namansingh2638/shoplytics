@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Purchases{% endblock %}
+{% block content %}
+  <h2>Purchase History</h2>
+  <div style="margin-bottom:16px;">
+    <a class="btn btn-primary" href="{{ url_for('suppliers.add_purchase') }}">+ Record Purchase</a>
+    <a class="btn" href="{{ url_for('suppliers.index') }}">Suppliers</a>
+  </div>
+
+  {% if purchases %}
+  <table>
+    <tr><th>Date</th><th>Supplier</th><th>Product</th><th>Qty</th><th>Cost/Unit</th><th>Total</th></tr>
+    {% for p in purchases %}
+    <tr>
+      <td>{{ p.date.strftime('%d %b %Y') }}</td>
+      <td>{{ p.supplier.name }}</td>
+      <td>{{ p.product.name }}</td>
+      <td>{{ p.quantity }}</td>
+      <td>₹{{ p.cost_price }}</td>
+      <td>₹{{ p.cost_price * p.quantity }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+    <div class="card"><p>No purchases recorded yet.</p></div>
+  {% endif %}
+{% endblock %}
