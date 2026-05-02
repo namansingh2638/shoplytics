@@ -11,6 +11,7 @@ from app.utils import admin_required
 from app.models import Organization
 from flask import render_template, session, request
 from flask import redirect, url_for, flash, render_template
+from flask_login import current_user
 
 def get_org_id():
     return session.get('org_id')
@@ -54,6 +55,10 @@ def calc_monthly_cogs(org_id, from_date):
 
 
 @bp.route('/')
+def home():
+    if current_user.is_authenticated:
+        return redirect(url_for('main.dashboard'))
+    return redirect(url_for('auth.login'))
 @bp.route('/dashboard')
 @login_required
 def dashboard():
