@@ -1,6 +1,7 @@
-Flask
-Flask-SQLAlchemy
-Flask-Login
-Flask-WTF
-Flask-Mail
+flask
+flask-sqlalchemy
+flask-login
+flask-wtf
+flask-mail
 gunicorn
+psycopg2-binary
